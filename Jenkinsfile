@@ -6,6 +6,17 @@ pipeline {
     }
 
     stages {
+        stage("Start Sonarqube server"){
+            steps{
+                echo "====++++ Start SonarQube Server ++++===="
+               // withCredentials([usernameColonPassword(credentialsId: 'user-password-vagrant', variable: 'USERPASS')]) {
+    //sh '''
+      //set +x
+      sudo docker run -d --name my-sonarqube -p 9000:9000 sonarqube:lts
+    //''' 
+      //  }
+          }
+        }
       // Clone from Git
         stage("Clone App from Git"){
             steps{
@@ -30,6 +41,18 @@ pipeline {
                      inventory: 'ansible/hosts', 
                       playbook: 'ansible/playbook-deploy-staging.yaml'             
             } 
-        }        
+        }
+        stage("Stop Sonarqube server"){
+            steps{
+                echo "====++++ Stop SonarQube Server ++++===="
+              //  withCredentials([usernameColonPassword(credentialsId: 'user-password-vagrant', variable: 'USERPASS')]) {
+    //sh '''
+      //set +x
+      sudo docker stop my-sonarqube && sudo docker rm my-sonarqube
+      //''' 
+        //        }
+             
+            }        
+        }
     }
 }
